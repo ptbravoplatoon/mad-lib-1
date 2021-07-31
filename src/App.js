@@ -1,34 +1,44 @@
-import React, { Component } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import './App.css'
 import WordForm from './components/madlib-wordform/WordForm.js'
 import Story from './components/madlib-story/Story.js'
+import MadLibSelector from './components/madLibSelector.js'
 import MadLibs from './madlibs/MadLibs.js'
 
-class App extends Component {
-  state = {
-    madlibs: MadLibs,
-    selectedMadLib: MadLibs[0]
-  }
+const App = () => {
+  const [madlibs, setmadlibs] = useState(MadLibs)
+  const [selectedMadLib, setSelectedMadLib] = useState(madlibs[0])
 
-  onWordInputChange = (key, value, index) => {
-    const newState = {
-      ...this.state
+  const onWordInputChange = (key, value, index) => {
+    const newWord = {
+      selectedMadLib
     }
-    newState.selectedMadLib.words[index] = {
-      ...newState.selectedMadLib.words[index],
+    newWord.selectedMadLib.words[index] = {
+      ...newWord.selectedMadLib.words[index],
       value: value
     }
-    this.setState(newState)
+    setSelectedMadLib({...newWord.selectedMadLib})
   }
-  render() {
-    return (
-      <div className="App">
-        <h1>MADLIBS!</h1>
-        <WordForm words={this.state.selectedMadLib.words} onInputChange={this.onWordInputChange} />
-        <Story text={this.state.selectedMadLib.getText()} />
-      </div>
-    )
-  }
-}
 
-export default App
+  const handleMadLibChange = (event) => {
+    setSelectedMadLib(madlibs[event.target.value])
+  }
+
+  const checkFinished = () => {
+    const truthArray = selectedMadLib.words.map( (word) => {
+      return word.value ? true : false
+    })
+    return truthArray.every( (bool) => {return bool === true})
+  }
+
+  return (
+    <div className="App">
+        <h1>MADLIBS!</h1>
+        <MadLibSelector madlibs={madlibs} handleMadLibChange={handleMadLibChange}/><br />
+        <WordForm words={selectedMadLib.words} onInputChange={onWordInputChange} />
+        { checkFinished() ? <Story text={selectedMadLib.getText()} /> : <p>Please fill out all the fields</p>}
+    </div>
+  );
+};
+
+export default App;
