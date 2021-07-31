@@ -26,12 +26,7 @@ const App = () => {
 
   const checkFinished = () => {
     const truthArray = selectedMadLib.words.map( (word) => {
-      if (word.value) {
-        return true
-      }
-      else {
-        return false
-      }
+      return word.value ? true : false
     })
     return truthArray.every( (bool) => {return bool === true})
   }
