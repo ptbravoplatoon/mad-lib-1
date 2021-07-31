@@ -24,12 +24,24 @@ const App = () => {
     setSelectedMadLib(madlibs[event.target.value])
   }
 
+  const checkFinished = () => {
+    const truthArray = selectedMadLib.words.map( (word) => {
+      if (word.value) {
+        return true
+      }
+      else {
+        return false
+      }
+    })
+    return truthArray.every( (bool) => {return bool === true})
+  }
+
   return (
     <div className="App">
         <h1>MADLIBS!</h1>
         <MadLibSelector madlibs={madlibs} handleMadLibChange={handleMadLibChange}/><br />
         <WordForm words={selectedMadLib.words} onInputChange={onWordInputChange} />
-        <Story text={selectedMadLib.getText()} />
+        { checkFinished() ? <Story text={selectedMadLib.getText()} /> : <p>Please fill out all the fields</p>}
     </div>
   );
 };
